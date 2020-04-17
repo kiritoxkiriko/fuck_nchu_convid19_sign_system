@@ -8,7 +8,7 @@ headers = {
     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
 }
 
-KEY = 'SCU21273Td787772b5aad3e2590a887408006164e5a744d174e51c'
+KEY = '' #填自己的SCKEY
 
 
 def get_user_URL(user_id: int, user_name: str):
@@ -96,7 +96,7 @@ def submit_dcwj_by_session(session, name, class_id, year, faculty, address) -> b
 
 def sign_by_session(session) -> bool:
     requests_data = {
-        'province': '天津市',
+        'province': '天津市', ##签到地址可自己替换，也可使用faker随机生成
         'city': '天津市',
         'district': '河北区',
         'street': '民生路',
