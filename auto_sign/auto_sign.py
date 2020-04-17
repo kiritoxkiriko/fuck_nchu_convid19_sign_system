@@ -8,7 +8,7 @@ headers = {
     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
 }
 
-KEY = 'SCU21273Td787772b5aad3e2590a887408006164e5a744d174e51c' #填自己的SCKEY
+KEY = '' #填自己的SCKEY
 
 
 def get_user_URL(user_id: int, user_name: str):
