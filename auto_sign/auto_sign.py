@@ -1,4 +1,4 @@
-import requests, json, random
+import requests, json, random, os,sys
 from faker import Faker
 
 f = Faker(locale="zh_CN")
@@ -8,7 +8,7 @@ headers = {
     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
 }
 
-KEY = '' #填自己的SCKEY
+KEY = 'SCU21273Td787772b5aad3e2590a887408006164e5a744d174e51c' #填自己的SCKEY
 
 
 def get_user_URL(user_id: int, user_name: str):
@@ -174,7 +174,7 @@ def push_msg_to_wechat(title: str, msg: str):
 def read_users(file_name):
     users = []
     lines = []
-    with open(file_name, mode='r', encoding='utf-8') as f:
+    with open(sys.path[0]+'/'+file_name, mode='r', encoding='utf-8') as f:
         lines = f.readlines()
 
     for s in lines:
