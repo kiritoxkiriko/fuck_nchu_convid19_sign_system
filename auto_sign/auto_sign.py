@@ -1,4 +1,4 @@
-import requests, json, random, os,sys
+import requests, json, random, os, sys
 from faker import Faker
 
 f = Faker(locale="zh_CN")
@@ -8,15 +8,15 @@ headers = {
     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
 }
 
-KEY = '' #填自己的SCKEY
+KEY = ''  # 填自己的SCKEY
 
 
 def get_user_URL(user_id: int, user_name: str):
     request_data = {
         'schoolNo': 4136010406,  # 昌航的学校代码
         'xhOrZgh': user_id,  # 学号
-        'sfzMd5': random.randint(1, 999),  # 随便填
-        'cardId': random.randint(1, 999),  # 随便填
+        'sfzMd5': random.randint(1, 9999),  # 随便填
+        'cardId': random.randint(1, 9999),  # 随便填
         'xm': '',  # 不用填
         'loginXm': user_name,  # 姓名
     }
@@ -94,12 +94,12 @@ def submit_dcwj_by_session(session, name, class_id, year, faculty, address) -> b
         return False, result['msg']
 
 
-def sign_by_session(session) -> bool:
+def sign_by_session(session, province, city, district, street, longitude, altitude) -> bool:
     requests_data = {
-        'province': '天津市', ##签到地址可自己替换，也可使用faker随机生成
-        'city': '天津市',
-        'district': '河北区',
-        'street': '民生路',
+        'province': province,  ##签到地址可自己替换，也可使用faker随机生成
+        'city': city,
+        'district': district,
+        'street': street,
         'xszt': 0,
         'jkzk': 0,
         'jkzkxq': '',
@@ -107,17 +107,17 @@ def sign_by_session(session) -> bool:
         'gldd': '',
         'mqtw': 0,
         'mqtwxq': '',
-        'zddlwz': '天津市天津市河北区',
+        'zddlwz': province + city + district,
         'sddlwz': '',
-        'bprovince': '天津市',
-        'bcity': '天津市',
-        'bdistrict': '河北区',
-        'bstreet': '民生路',
-        'sprovince': '天津市',
-        'scity': '天津市',
-        'sdistrict': '河北区',
-        'lng': '117.21081309',
-        'lat': '39.1439299',
+        'bprovince': province,
+        'bcity': city,
+        'bdistrict': district,
+        'bstreet': street,
+        'sprovince': province,
+        'scity': city,
+        'sdistrict': district,
+        'lng': longitude,
+        'lat': altitude,
         'sfby': 1,
     }
     res = session.post('https://fxgl.jx.edu.cn/4136010406/studentQd/saveStu', data=requests_data, headers=headers)
@@ -130,7 +130,7 @@ def sign_by_session(session) -> bool:
         return False
 
 
-def auto_sign(student_id, name, faculty) -> dict:
+def auto_sign(student_id, name, faculty, province, city, district, street, longitude, altitude) -> dict:
     result = {
         'id': student_id,
         'name': name,
@@ -146,7 +146,7 @@ def auto_sign(student_id, name, faculty) -> dict:
 
     user_URL = get_user_URL(student_id, name)
     session = get_session_by_user_URL(user_URL)
-    isSign = sign_by_session(session)
+    isSign = sign_by_session(session, province, city, district, street, longitude, altitude)
     submit_result = submit_dcwj_by_session(session, name, class_id, year, faculty, address)
     return {
         'id': student_id,
@@ -174,7 +174,7 @@ def push_msg_to_wechat(title: str, msg: str):
 def read_users(file_name):
     users = []
     lines = []
-    with open(sys.path[0]+'/'+file_name, mode='r', encoding='utf-8') as f:
+    with open(sys.path[0] + '/' + file_name, mode='r', encoding='utf-8') as f:
         lines = f.readlines()
 
     for s in lines:
@@ -187,7 +187,7 @@ if __name__ == '__main__':
     users = read_users('data.txt')
     results = []
     for i in users:
-        results.append(auto_sign(i[0], i[1], i[2]))
+        results.append(auto_sign(i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8]))
     title = '疫情系统自动签到状态'
 
     str = ''
